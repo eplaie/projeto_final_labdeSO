@@ -145,9 +145,9 @@ minikube service image-processor --url
    - Download das imagens processadas
 
 No repositório foi deixado uma pasta com imagens para teste, com o formato .jpg.
-Se preferir, pode testar com outras imagens em formato .jpg
-Ao colocar várias imagens ao mesmo tempo, você pode realizar o monitoramento atráves do tópico de monitoramento, logo abaixo, será importante pois o front está demorando com as requisições
-Ex: Subiu as imagens, fio em Dashboard, se for assim que clicar em Upload, o estado estará em Processing, mas se clicar no olho azul (canto direito), você vai ver que o status já foi atualizado, se você fizer dois cliques em Dashboard ele também atualizará. O ideal é ficar monitarando através dos logs disponibilzados abaixo.
+Se preferir, pode testar com outras imagens, em formato .jpg
+Ao colocar várias imagens ao mesmo tempo, você pode realizar o monitoramento atráves dos monitoramento detalhados no próximo tópico,  será importante pois o front está demorando com algumas requisições.
+Ex: Subiu as imagens, assim que clicar em Upload, vá em Dashboard,  o estado estará em Processing, mas se clicar no olho azul (canto direito), você vai ver que o status já foi atualizado, se você fizer dois cliques em Dashboard ele também atualizará. O ideal é ficar monitarando através dos logs disponibilzados abaixo.
 
 ## Monitoramento
 
