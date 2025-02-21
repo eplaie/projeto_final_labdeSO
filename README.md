@@ -161,14 +161,6 @@ kubectl delete -f k8s/
 minikube stop
 ```
 
-## Funcionalidades
-- Processamento paralelo de imagens usando threads
-- Interface web para upload e monitoramento
-- Dashboard com métricas em tempo real
-- Sistema de fila para processamento
-- Balanceamento de carga com Kubernetes
-- Armazenamento com PostgreSQL
-
 ## Solução de Problemas
 
 1. **Erro de permissão no Docker**:
