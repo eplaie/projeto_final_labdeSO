@@ -35,8 +35,8 @@ projeto/
 
 1. **Clone o repositório**:
 ```bash
-git clone [URL_DO_REPOSITORIO]
-cd [NOME_DO_DIRETORIO]
+git clone https://github.com/eplaie/projeto_final_labdeSO.git
+cd projeto_final_labdeSO
 ```
 
 ### 2. Instalando Docker
