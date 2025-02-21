@@ -35,8 +35,8 @@ projeto/
 
 1. **Clone o repositório**:
 ```bash
-git clone [URL_DO_REPOSITORIO]
-cd [NOME_DO_DIRETORIO]
+git clone https://github.com/eplaie/projeto_final_labdeSO.git
+cd projeto_final_labdeSO
 ```
 
 ### 2. Instalando Docker
@@ -139,6 +139,9 @@ minikube service image-processor --url
    - Visualização de estatísticas no dashboard
    - Download das imagens processadas
 
+No repositório foi deixado uma imagem para teste, com o formato .jpg.
+Se preferir, pode testar com outras imagens em formato .jpg
+
 ## Monitoramento
 
 Para verificar logs e status:
@@ -151,6 +154,9 @@ kubectl logs postgres-0
 
 # Status dos pods
 kubectl get pods
+
+# Dados na tabela
+kubectl exec -it postgres-0 -- psql -U postgres -d imagedb -c "SELECT id, status, length(original_data), length(processed_data) from processed_images ORDER BY uploaded_at DESC LIMIT 5;"
 ```
 
 ## Limpeza
@@ -161,15 +167,10 @@ kubectl delete -f k8s/
 minikube stop
 ```
 
-## Funcionalidades
-- Processamento paralelo de imagens usando threads
-- Interface web para upload e monitoramento
-- Dashboard com métricas em tempo real
-- Sistema de fila para processamento
-- Balanceamento de carga com Kubernetes
-- Armazenamento com PostgreSQL
-
 ## Solução de Problemas
+
+Um problema sem solução até o momento é o do formato de Download da imagem (contém um erro ao abrir a imagem), o objetivo do trabalho era redimensionar, por exemplo, se você enviar uma imagem de 2000x1500 pixels, ela será redimensionada para 800x600 (mantendo a proporção)
+se você enviar uma imagem de 600x400 pixels, ela permanecerá com esse tamanho
 
 1. **Erro de permissão no Docker**:
 ```bash
