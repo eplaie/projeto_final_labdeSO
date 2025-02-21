@@ -1,4 +1,3 @@
-# templates/index.html
 {% extends "base.html" %}
 
 {% block title %}Home{% endblock %}
@@ -8,13 +7,13 @@
     <div class="col-md-6 offset-md-3">
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-upload"></i> Upload Image</h5>
+                <h5 class="mb-0"><i class="fas fa-upload"></i> Upload Images</h5>
             </div>
             <div class="card-body">
                 <form id="uploadForm" enctype="multipart/form-data">
                     <div class="mb-3">
-                        <label for="image" class="form-label">Select Image</label>
-                        <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+                        <label for="images" class="form-label">Select Images</label>
+                        <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple required>
                     </div>
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-cloud-upload-alt"></i> Upload
@@ -35,7 +34,12 @@ $(document).ready(function() {
         e.preventDefault();
         
         var formData = new FormData();
-        formData.append('image', $('#image')[0].files[0]);
+        var files = $('#images')[0].files;
+        
+        // Adiciona múltiplos arquivos ao FormData
+        for(var i = 0; i < files.length; i++) {
+            formData.append('images', files[i]);
+        }
 
         $.ajax({
             url: '/upload',
@@ -46,16 +50,17 @@ $(document).ready(function() {
             beforeSend: function() {
                 $('#uploadStatus').removeClass('alert-success alert-danger')
                     .addClass('alert-info')
-                    .html('<i class="fas fa-spinner fa-spin"></i> Processing...')
+                    .html('<i class="fas fa-spinner fa-spin"></i> Processing multiple images...')
                     .show();
             },
             success: function(response) {
                 $('#uploadStatus').removeClass('alert-info alert-danger')
                     .addClass('alert-success')
-                    .html('<i class="fas fa-check-circle"></i> Upload successful! Redirecting to status page...');
+                    .html('<i class="fas fa-check-circle"></i> Successfully uploaded ' + 
+                          response.images.length + ' images! Redirecting to dashboard...');
                 
                 setTimeout(function() {
-                    window.location.href = '/status/' + response.image_id;
+                    window.location.href = '/dashboard';
                 }, 2000);
             },
             error: function(xhr) {
@@ -68,4 +73,3 @@ $(document).ready(function() {
 });
 </script>
 {% endblock %}
-

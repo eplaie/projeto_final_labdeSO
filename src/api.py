@@ -50,6 +50,13 @@ def setup():
 def index():
     return render_template('index.html')
 
+
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @app.route('/dashboard')
 def dashboard():
     try:
@@ -112,33 +119,47 @@ def dashboard():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/upload', methods=['POST'])
-def upload_image():
+def upload_images():
     try:
-        if 'image' not in request.files:
-            return jsonify({'error': 'No image file'}), 400
+        if 'images' not in request.files:
+            return jsonify({'error': 'No images uploaded'}), 400
             
-        image_file = request.files['image']
-        image_data = image_file.read()
-        
-        image_id = uuid.uuid4()
-        
-        conn = psycopg2.connect(**db_config)
-        cur = conn.cursor()
-        cur.execute("""
-            INSERT INTO processed_images (id, original_data, status)
-            VALUES (%s, %s, 'processing')
-        """, (str(image_id), image_data))
-        conn.commit()
-        cur.close()
-        conn.close()
-        
-        processor.add_image(str(image_id), image_data)
-        
+        files = request.files.getlist('images')
+        if not files:
+            return jsonify({'error': 'No images selected'}), 400
+
+        results = []
+        for file in files:
+            if file and allowed_file(file.filename):
+                image_id = str(uuid.uuid4())
+                image_bytes = file.read()
+                
+                # Usando db_config diretamente como no resto do código
+                conn = psycopg2.connect(**db_config)
+                cur = conn.cursor()
+                cur.execute("""
+                    INSERT INTO processed_images (id, original_data, status)
+                    VALUES (%s, %s, 'pending')
+                """, (image_id, psycopg2.Binary(image_bytes)))
+                conn.commit()
+                cur.close()
+                conn.close()
+                
+                processor.add_image(image_id, image_bytes)
+                
+                results.append({
+                    'id': image_id,
+                    'filename': file.filename,
+                    'status': 'pending'
+                })
+
         return jsonify({
-            'message': 'Image uploaded successfully',
-            'image_id': str(image_id)
-        })
+            'message': f'Successfully uploaded {len(results)} images',
+            'images': results
+        }), 202
+
     except Exception as e:
+        print(f"Error in upload: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/status/<image_id>')

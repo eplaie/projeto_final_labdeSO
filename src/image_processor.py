@@ -68,6 +68,8 @@ class ImageProcessor:
             # Carrega a imagem
             image = Image.open(io.BytesIO(image_bytes))
             
+            time.sleep(5)
+            
             # Exemplo de processamento: redimensiona para thumbnail
             max_size = (800, 800)
             image.thumbnail(max_size, Image.Resampling.LANCZOS)
