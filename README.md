@@ -151,6 +151,9 @@ kubectl logs postgres-0
 
 # Status dos pods
 kubectl get pods
+
+# Dados na tabela
+kubectl exec -it postgres-0 -- psql -U postgres -d imagedb -c "SELECT id, status, length(original_data), length(processed_data) from processed_images ORDER BY uploaded_at DESC LIMIT 5;"
 ```
 
 ## Limpeza
