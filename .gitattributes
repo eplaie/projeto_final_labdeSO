@@ -1,0 +1,2 @@
+docker/kubectl filter=lfs diff=lfs merge=lfs -text
+docker/minikube-linux-amd64 filter=lfs diff=lfs merge=lfs -text
