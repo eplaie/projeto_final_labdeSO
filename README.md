@@ -176,7 +176,45 @@ Para novos testes, você pode apagar o conteudo do banco de dados com o seguinte
 ```bash
 kubectl exec -it postgres-0 -- psql -U postgres -d imagedb -c "TRUNCATE TABLE processed_images;"
 ```
-    
+
+## Testes - Kubernetes
+1 - Balanceamento de Carga:
+```bash
+# Ver como os pods estão distribuídos
+kubectl get pods -o wide
+```
+2 - Visualizar Eventos:
+```bash
+# Ver eventos do cluster
+kubectl get events --sort-by='.metadata.creationTimestamp'
+```
+3 - Auto Recuperação:
+Primeiro, veja os pods atuais:
+```bash
+kubectl get pods
+```
+Você deve ver algo como:
+```bash
+NAME                              READY   STATUS    RESTARTS   AGE
+image-processor-75bf4b66c4-j842t   1/1     Running   0          35m
+image-processor-75bf4b66c4-4vgnf   1/1     Running   0          35m
+image-processor-75bf4b66c4-h9gkh   1/1     Running   0          35m
+```
+Agora podemos deletar um dos pods ativos (mude conforme estiver na sua maquina):
+```bash
+kubectl delete pod image-processor-75bf4b66c4-j842t
+```
+Depois, rapidamente verifique os eventos:
+```bash
+kubectl get events --sort-by='.metadata.creationTimestamp'
+```
+Você deve ver o Kubernetes iniciando um novo pod para substituir o que foi deletado. O interessante é que mesmo durante esse processo de substituição:
+
+O serviço continua funcionando com os outros dois pods
+O banco de dados (postgres-0) não é afetado
+Nenhuma imagem em processamento é perdida
+
+
 ## Limpeza
 
 Para parar o sistema:
