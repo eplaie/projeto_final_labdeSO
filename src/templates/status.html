@@ -1,0 +1,72 @@
+# templates/status.html
+{% extends "base.html" %}
+
+{% block title %}Status{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Image Processing Status</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Image ID:</h6>
+                        <p class="text-muted">{{ image_id }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Status:</h6>
+                        <p id="status" class="badge bg-{{ 'success' if status == 'completed' else 'warning' }}">
+                            {{ status }}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="progress mt-3" style="height: 25px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         role="progressbar"
+                         style="width: {{ '100%' if status == 'completed' else '50%' }}">
+                    </div>
+                </div>
+
+                {% if status == 'completed' %}
+                <div class="mt-3">
+                    <h6>Processed at:</h6>
+                    <p>{{ processed_at }}</p>
+                    <a href="/download/{{ image_id }}" class="btn btn-success">
+                        <i class="fas fa-download"></i> Download Processed Image
+                    </a>
+                </div>
+                {% else %}
+                <div class="text-center mt-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Processing your image...</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if status != 'completed' %}
+<script>
+function checkStatus() {
+    $.get('/status/{{ image_id }}/json', function(data) {
+        if (data.status == 'completed') {
+            location.reload();
+        }
+    });
+}
+
+$(document).ready(function() {
+    setInterval(checkStatus, 2000);
+});
+</script>
+{% endif %}
+{% endblock %}

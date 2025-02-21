@@ -1,0 +1,12 @@
+FROM postgres:13
+
+# Define variáveis de ambiente para configuração inicial
+ENV POSTGRES_DB=imagedb
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=postgres
+
+# Copia script de inicialização do diretório atual
+COPY init.sql /docker-entrypoint-initdb.d/
+
+# Expõe a porta padrão do PostgreSQL
+EXPOSE 5432
