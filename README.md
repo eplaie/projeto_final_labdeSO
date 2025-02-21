@@ -96,6 +96,11 @@ minikube start
 eval $(minikube docker-env)
 ```
 
+se der error o comando de cima, utilizar esse aqui:
+```bash
+sudo usermod -aG docker $USER && newgrp docker
+```
+
 3. **Construa as imagens Docker**:
 ```bash
 # Construir imagem da aplicação
@@ -139,8 +144,10 @@ minikube service image-processor --url
    - Visualização de estatísticas no dashboard
    - Download das imagens processadas
 
-No repositório foi deixado uma imagem para teste, com o formato .jpg.
+No repositório foi deixado uma pasta com imagens para teste, com o formato .jpg.
 Se preferir, pode testar com outras imagens em formato .jpg
+Ao colocar várias imagens ao mesmo tempo, você pode realizar o monitoramento atráves do tópico de monitoramento, logo abaixo, será importante pois o front está demorando com as requisições
+Ex: Subiu as imagens, fio em Dashboard, se for assim que clicar em Upload, o estado estará em Processing, mas se clicar no olho azul (canto direito), você vai ver que o status já foi atualizado, se você fizer dois cliques em Dashboard ele também atualizará. O ideal é ficar monitarando através dos logs disponibilzados abaixo.
 
 ## Monitoramento
 
@@ -159,6 +166,17 @@ kubectl get pods
 kubectl exec -it postgres-0 -- psql -U postgres -d imagedb -c "SELECT id, status, length(original_data), length(processed_data) from processed_images ORDER BY uploaded_at DESC LIMIT 5;"
 ```
 
+## Testes - Upload Simultâneo de Imagens
+     Objetivo: Testar a capacidade do sistema de lidar com múltiplos uploads simultâneos
+     Método: Upload das 5 imagens ao mesmo tempo
+     As 4 threads devem processar 4 imagens simultaneamente
+     A quinta imagem deve aguardar na fila até que uma thread fique disponível
+     
+Para novos testes, você pode apagar o conteudo do banco de dados com o seguinte comando:
+```bash
+kubectl exec -it postgres-0 -- psql -U postgres -d imagedb -c "TRUNCATE TABLE processed_images;"
+```
+    
 ## Limpeza
 
 Para parar o sistema:
