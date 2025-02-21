@@ -139,6 +139,9 @@ minikube service image-processor --url
    - Visualização de estatísticas no dashboard
    - Download das imagens processadas
 
+No repositório foi deixado uma imagem para teste, com o formato .jpg.
+Se preferir, pode testar com outras imagens em formato .jpg
+
 ## Monitoramento
 
 Para verificar logs e status:
@@ -165,6 +168,9 @@ minikube stop
 ```
 
 ## Solução de Problemas
+
+Um problema sem solução até o momento é o do formato de Download da imagem (contém um erro ao abrir a imagem), o objetivo do trabalho era redimensionar, por exemplo, se você enviar uma imagem de 2000x1500 pixels, ela será redimensionada para 800x600 (mantendo a proporção)
+se você enviar uma imagem de 600x400 pixels, ela permanecerá com esse tamanho
 
 1. **Erro de permissão no Docker**:
 ```bash
